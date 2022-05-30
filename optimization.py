@@ -19,15 +19,6 @@ predict_data = lumpy_predict.union(smooth_predict).union(erratic_predict).union(
 
 
 
-window_7T = Window.partitionBy("ITEMCODE").orderBy("TRANS_DATE").rowsBetween(-3,Window.currentRow-1)
-data_7T = all_cluster_data.withColumn("ITEMCODE",F.substring(F. col("ID"),10,20))\
-                    .withColumn("WHSCODE",F.substring(F.col("ID"),1,8))\
-                    .groupBy(["TRANS_DATE","ITEMCODE"])\
-                    .agg(F.sum("QTY").alias("SYSTEM_TRANS_HIS"))\
-                    .sort(["ITEMCODE","TRANS_DATE"])\
-                    .withColumn("7_T",F.sum(F.col("SYSTEM_TRANS_HIS"))\
-                    .over(window_7T))\
-                    .fillna(0)
 # data_7T = data_7T.groupBy(["TRANS_DATE","ITEMCODE"]).agg(F.sum("QTY").alias("SYSTEM_TRANS_HIS")).sort(["ITEMCODE","TRANS_DATE"]).withColumn("7_T",F.sum(F.col("SYSTEM_TRANS_HIS")).over(window_7T)).fillna(0)
 
 window = Window.partitionBy("ID").orderBy("TRANS_DATE")
